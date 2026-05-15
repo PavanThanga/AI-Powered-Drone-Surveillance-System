@@ -1,0 +1,27 @@
+# Python
+__pycache__/
+*.pyc
+
+# Node
+node_modules/
+
+# Environment
+.env
+
+# Database
+*.db
+
+# Model files
+*.pt
+
+# Documents
+*.pdf
+*.pptx
+*.xlsx
+
+# Images generated during testing
+results.png
+comparison.png
+
+# VS Code
+.vscode/

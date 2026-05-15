@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GARUDA - AI Drone Surveillance</title>
+
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Rajdhani:wght@300;400;600&display=swap" rel="stylesheet">
+
+    <!-- CSS -->
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<div class="bg-grid"></div>
+
+<div class="container">
+
+    <!-- Header -->
+    <div class="header">
+        <div class="logo">AI-Powered Surveillance</div>
+        <div class="status-indicator" id="statusIndicator" style="display:none;">
+            <div class="status-dot"></div>
+            <span id="userName">System Online</span>
+        </div>
+    </div>
+
+    <!-- Auth Screen -->
+    <div class="auth-screen" id="authScreen">
+        <div class="auth-container">
+
+            <!-- Login -->
+            <div id="loginForm">
+                <h2 class="auth-title">AUTHORIZED ACCESS</h2>
+                <p class="auth-subtitle">Enter your credentials to continue</p>
+
+                <form id="loginFormSubmit">
+                    <div class="form-group">
+                        <label class="form-label">Username</label>
+                        <input type="text" class="form-input" id="loginUsername" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Password</label>
+                        <input type="password" class="form-input" id="loginPassword" required>
+                    </div>
+                    <button class="btn">Login</button>
+                </form>
+                
+            </div>
+
+        </div>
+    </div>
+
+    <!-- Dashboard -->
+    <div class="dashboard" id="dashboard">
+        <div class="dashboard-header">
+            <h1 class="dashboard-title">SURVEILLANCE DASHBOARD</h1>
+            <p class="dashboard-subtitle">Select your monitoring mode</p>
+        </div>
+
+        <div class="mode-selection">
+            <div class="mode-card" data-mode="existing">
+                <span class="mode-icon">📁</span>
+                <h3 class="mode-title">EXISTING FOOTAGE</h3>
+                <p class="mode-description">Upload and analyze recorded footage.</p>
+            </div>
+
+            <div class="mode-card" data-mode="live">
+                <span class="mode-icon">📡</span>
+                <h3 class="mode-title">LIVE TRANSMISSION</h3>
+                <p class="mode-description">Analyze Real-time drone feed.</p>
+            </div>
+        </div>
+        <!-- Logout Button -->
+        <button id="logoutBtn" class="logout-btn hidden">Logout</button>
+    </div>
+
+    <!-- Existing Footage -->
+    <div class="analysis-view" id="existingView">
+        <div class="view-header">
+            <h2 class="view-title">EXISTING FOOTAGE ANALYSIS</h2>
+            <button class="btn-back" id="backFromExisting">← Back</button>
+        </div>
+
+        <div class="upload-section" id="uploadSection">
+            <label class="upload-label">
+                <input type="file" id="fileUpload" accept="image/*,video/*">
+                <div class="upload-icon">⬆️</div>
+                <div class="upload-text">Upload Footage</div>
+                <div class="upload-subtext">Images or videos</div>
+            </label>
+        </div>
+
+        <div class="dual-view" id="dualView">
+            <!-- LEFT: AI PROCESSED (MAIN) -->
+            <div class="view-panel">
+                <div class="panel-header">
+                    <span class="panel-title">Processed Footage</span>
+                </div>
+                <div class="media-container">
+                    <div class="processing-overlay" id="processingOverlay">
+                        <div class="spinner"></div>
+                        <div class="processing-text">ANALYZING...</div>
+                    </div>
+                <div id="aiMedia"></div>    
+                </div>
+            </div>
+
+            <!-- RIGHT: DETAILS + ORIGINAL -->
+            <div class="view-panel side-panel">
+                <!-- Original (Small) -->
+                <div class="original-small">
+                    <h4>ORIGINAL FOOTAGE</h4><br>
+                    <div class="media-container small" id="originalMedia"></div>
+                </div>
+                <!-- Model Selection -->
+                <div class="model-selection">
+                    <h4>SELECT DETECTION MODELS</h4>
+
+                    <label class="toggle">
+                        <input type="checkbox" id="humanSwitch" checked>
+                        <span class="toggle-slider"></span>
+                        <span class="toggle-label">
+                            <span class="color-dot human-dot"></span>
+                            Human
+                        </span>
+                    </label>
+
+                    <label class="toggle">
+                        <input type="checkbox" id="vehicleSwitch">
+                        <span class="toggle-slider"></span>
+                        <span class="toggle-label">
+                            <span class="color-dot vehicle-dot"></span>
+                            Vehicle
+                        </span>
+                    </label>
+
+                    <label class="toggle">
+                        <input type="checkbox" id="weaponSwitch">
+                        <span class="toggle-slider"></span>
+                        <span class="toggle-label">
+                            <span class="color-dot weapon-dot"></span>
+                            Weapon
+                        </span>
+                    </label>
+
+                    <button type="button" class="btn analyze-btn" id="analyzeBtn" disabled>
+                        Analyze
+                    </button>
+                </div>
+
+                <!-- Detection Details -->
+                <div class="detection-details">
+                    <h3>DETECTION SUMMARY</h3>
+                    <p>Human: <span id="detHuman">--</span></p>
+                    <p>Vehicle: <span id="detVehicle">--</span></p>
+                    <p>Weapon: <span id="detWeapon">--</span></p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+<!-- Live View -->
+<div class="analysis-view" id="liveView">
+    <div class="view-header">
+        <h2 class="view-title">LIVE TRANSMISSION</h2>
+        <button class="btn-back" id="backFromLive">← Back</button>
+    </div>
+
+    <!-- Source Input -->
+    <div class="live-source">
+        <input type="text" id="liveSourceInput" 
+               placeholder="Enter RTSP Url">
+        <button class="control-btn" id="connectBtn">Connect</button>
+        <button class="control-btn" id="startBtn" disabled>Start Analysis</button>
+        <button class="control-btn stop" id="stopBtn" disabled>Stop</button>
+    </div>
+
+    <div class="dual-view show-grid">
+
+        <!-- LEFT: PROCESSED (70%) -->
+        <div class="view-panel">
+            <div class="panel-header">
+                <span class="panel-title">LIVE PROCESSED</span>
+            </div>
+            <div class="media-container">
+                <img id="liveAI" style="width:100%;" />
+            </div>
+        </div>
+
+        <!-- RIGHT: ORIGINAL + CONTROLS (30%) -->
+        <div class="view-panel side-panel">
+
+            <!-- ORIGINAL SMALL -->
+            <div class="original-small">
+                <h4>LIVE ORIGINAL</h4>
+                <div class="media-container small">
+                    <img id="liveOriginal" style="width:100%;" />
+                </div>
+            </div>
+
+            <!-- TOGGLES -->
+            <div class="model-selection">
+                <h4>SELECT DETECTION MODELS</h4>
+
+                <label class="toggle">
+                    <input type="checkbox" id="liveHumanSwitch" checked>
+                    <span class="toggle-slider"></span>
+                    <span class="toggle-label">
+                        <span class="color-dot human-dot"></span>
+                        Human
+                    </span>
+                </label>
+
+                <label class="toggle">
+                    <input type="checkbox" id="liveVehicleSwitch">
+                    <span class="toggle-slider"></span>
+                    <span class="toggle-label">
+                        <span class="color-dot vehicle-dot"></span>
+                        Vehicle
+                    </span>
+                </label>
+
+                <label class="toggle">
+                    <input type="checkbox" id="liveWeaponSwitch">
+                    <span class="toggle-slider"></span>
+                    <span class="toggle-label">
+                        <span class="color-dot weapon-dot"></span>
+                        Weapon
+                    </span>
+                </label>
+            </div>
+            <div class="live-alert-section">
+                <button class="btn alert-btn" id="liveAlertBtn" disabled>
+                    Trigger Alert
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+</div>
+
+<!-- JS -->
+<script src="script.js"></script>
+</body>
+</html>
